@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+# git-gofmt
+#
+# This script behaves similarly to 'git clang-format', but for Go.
+# It finds all staged Go files (.go), runs 'gofmt -w' (format in-place)
+# on them, and then re-stages the changes.
+#
+# This is useful as a pre-commit hook or as a manual command to ensure
+# all Go code is formatted before committing.
+
+main() {
+    set -e -o pipefail
+    # Use local variables
+    local format_all=0
+    local go_files
+    local diff_filter="ACMRTUXB" # Filters for staged files
+
+    # Simple argument parsing for -f
+    if [[ "$1" == "-f" ]]; then
+        format_all=1
+    fi
+
+    if [[ "$format_all" -eq 1 ]]; then
+        go_files=$(git ls-files --others --exclude-standard -m '*.go')
+
+        if [ -z "$go_files" ]; then
+            echo "No .go files found in the repository."
+            exit 0
+        fi
+
+        echo "Formatting all .go files with 'gofmt -w'..."
+        # We pipe the list to xargs to handle a large number of files.
+        echo "$go_files" | xargs gofmt -w
+        echo "Format complete. (Changes are NOT staged)"
+
+    else
+        # Get a list of staged .go files
+        # --diff-filter=ACMRTUXB filters for files that are:
+        # Added (A), Copied (C), Modified (M), Renamed (R),
+        # Type-changed (T), Unmerged (U), Unknown (X), or Broken (B).
+        # This notably excludes Deleted (D) files.
+        go_files=$(git diff --cached --name-only --diff-filter="$diff_filter" | grep '\.go$')
+
+        if [ -z "$go_files" ]; then
+            echo "No staged .go files to format."
+            exit 0
+        fi
+
+        echo "Formatting the following staged files with 'gofmt -w':"
+        echo "$go_files"
+
+        # Run gofmt -w on the files.
+        echo "$go_files" | xargs gofmt -w
+
+        echo "Re-staging formatted files..."
+
+        # Re-stage the files that were formatted
+        echo "$go_files" | xargs git add
+
+        echo "Staged gofmt complete."
+    fi
+}
+
+# Call main with all script arguments
+main "$@"
+
