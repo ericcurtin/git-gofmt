@@ -2,7 +2,7 @@
 #
 # git-gofmt
 #
-# This script behaves similarly to 'git clang-format', but for Go.
+# This script behaves similarly to 'git-clang-format', but for Go.
 # It finds all staged Go files (.go), runs 'gofmt -w' (format in-place)
 # on them, and then re-stages the changes.
 #

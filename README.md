@@ -1,6 +1,6 @@
 # git-gofmt
 
-A Git command-line extension that automatically formats Go code using `gofmt` in a manner similar to `git clang-format`. This utility finds all staged Go files, formats them using `gofmt -w`, and re-stages the changes.
+A Git command-line extension that automatically formats Go code using `gofmt` in a manner similar to `git-clang-format`. This utility finds all staged Go files, formats them using `gofmt -w`, and re-stages the changes.
 
 ## Purpose
 
@@ -38,7 +38,7 @@ git gofmt -f                 # Format all .go files, not just staged ones
 
 ## Features
 
-- Mimics the behavior of `git clang-format` for Go code
+- Mimics the behavior of `git-clang-format` for Go code
 - Automatically stages formatted files
 - Supports formatting all files or only staged files
 - Handles large numbers of files efficiently using `xargs`
