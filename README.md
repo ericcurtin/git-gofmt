@@ -26,7 +26,7 @@ git gofmt                    # Format only staged .go files
 
 ### Format all Go files in the repository
 ```bash
-git gofmt -f                 # Format all .go files, not just staged ones
+git gofmt -f                 # Format all changed .go files, not just staged ones
 ```
 
 ## How it works
